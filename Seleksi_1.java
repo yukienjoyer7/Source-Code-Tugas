@@ -1,3 +1,12 @@
+/* 
+Buat program untuk meng-input nilai IPK mahasiswa dan berikan penilaian:
+3,5 – 4,0 	Sangat Memuaskan
+3,0 – 3,4 	Memuaskan
+2,5 – 2,9 	Baik Sekali
+2,0 – 2,4 	Baik
+0,0 – 2,0  	Kurang 
+*/
+
 import java.util.*;
 public class Seleksi_1 {
 
@@ -25,7 +34,5 @@ public class Seleksi_1 {
         else{
             System.out.println("IPK Anda Kurang!");
         }
-
-
     }
 }
