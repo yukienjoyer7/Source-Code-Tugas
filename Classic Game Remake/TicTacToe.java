@@ -26,7 +26,6 @@ public class TicTacToe {
     {' ', ' ', ' '},
     {' ', ' ', ' '},}; // Mulai dengan ruang kosong
 
-    
     /**
     * Counter giliran, digunakan untuk menentukan giliran pemain.
     */
@@ -342,107 +341,6 @@ public class TicTacToe {
     }
     
     /**
-     * Algoritma Minimax untuk mengevaluasi langkah terbaik bot.
-     * 
-     * @param isMaximizing apakah giliran untuk memaksimalkan (bot) atau meminimalkan (lawan).
-     * @param Bot karakter bot ('X' atau 'O').
-     * @return <strong><i>10</i></strong>, Jika bot menang.
-     * <li><strong><i>-10</i></strong>, Jika bot kalah.
-     * <li><strong><i>0</i></strong>, Jika hasil permainan seri.
-     */
-    public static int minimax(boolean isMaximizing, char Bot) {
-        char Player = (Bot == 'X') ? 'O' : 'X'; // Tentukan lawan
-        int score = evaluate(Bot); // Evaluasi skor papan saat ini
-    
-        // Basis Kasus: Jika permainan selesai
-        if (score == 10 || score == -10) return score; // Menang/Kalah
-        if (isDraw()) return 0; // Seri
-    
-        if (isMaximizing) { // Bot mencoba memaksimalkan
-            int bestScore = Integer.MIN_VALUE;
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (input[i][j] == ' ') {
-                        input[i][j] = Bot; // Coba langkah Bot
-                        bestScore = Math.max(bestScore, minimax(false, Bot)); // Rekursi untuk lawan
-                        input[i][j] = ' '; // Kembalikan papan
-                    }
-                }
-            }
-            return bestScore;
-        } else { // Pemain mencoba meminimalkan
-            int bestScore = Integer.MAX_VALUE;
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (input[i][j] == ' ') {
-                        input[i][j] = Player; // Coba langkah lawan
-                        bestScore = Math.min(bestScore, minimax(true, Bot)); // Rekursi untuk Bot
-                        input[i][j] = ' '; // Kembalikan papan
-                    }
-                }
-            }
-            return bestScore;
-        }
-    }
-    
-    /**
-     * Mengevaluasi skor papan permainan saat ini.
-     * 
-     * @param Bot karakter bot ('X' atau 'O').
-     * @return 
-     * <strong><i>10</i></strong>, Jika bot menang. 
-     * <li><strong><i>-10</i></strong>, Jika bot kalah.
-     * <li><strong><i>0</i></strong>, Jika hasil permainan seri.
-     */
-    public static int evaluate(char Bot) {
-        char Player = (Bot == 'X') ? 'O' : 'X';
-    
-        // Periksa baris
-        for (int i = 0; i < 3; i++) {
-            if (input[i][0] == input[i][1] && input[i][1] == input[i][2]) {
-                if (input[i][0] == Bot) return 10;
-                if (input[i][0] == Player) return -10;
-            }
-        }
-    
-        // Periksa kolom
-        for (int j = 0; j < 3; j++) {
-            if (input[0][j] == input[1][j] && input[1][j] == input[2][j]) {
-                if (input[0][j] == Bot) return 10;
-                if (input[0][j] == Player) return -10;
-            }
-        }
-    
-        // Periksa diagonal
-        if (input[0][0] == input[1][1] && input[1][1] == input[2][2]) {
-            if (input[0][0] == Bot) return 10;
-            if (input[0][0] == Player) return -10;
-        }
-        if (input[0][2] == input[1][1] && input[1][1] == input[2][0]) {
-            if (input[0][2] == Bot) return 10;
-            if (input[0][2] == Player) return -10;
-        }
-    
-        return 0; // Tidak ada pemenang
-    }
-
-    /**
-     * Mengecek apakah permainan berakhir dengan hasil seri.
-     * 
-     * @return 
-     * <strong><i>True</i></strong> jika ada ruang yang kosong. 
-     * <li><strong><i>False</i></strong> jika tidak.
-     */
-    public static boolean isDraw() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (input[i][j] == ' ') return false; // Jika ada ruang kosong, belum seri
-            }
-        }
-        return true;
-    }
-
-    /**
      * Logika bot untuk mengambil langkah menang jika memungkinkan.
      * 
      * @param Bot karakter bot ('X' atau 'O').
@@ -576,6 +474,90 @@ public class TicTacToe {
         return false;
     }
 
+    /**
+     * Algoritma Minimax untuk mengevaluasi langkah terbaik bot.
+     * 
+     * @param isMaximizing apakah giliran untuk memaksimalkan (bot) atau meminimalkan (lawan).
+     * @param Bot karakter bot ('X' atau 'O').
+     * @return <strong><i>10</i></strong>, Jika bot menang.
+     * <li><strong><i>-10</i></strong>, Jika bot kalah.
+     * <li><strong><i>0</i></strong>, Jika hasil permainan seri.
+     */
+    public static int minimax(boolean isMaximizing, char Bot) {
+        char Player = (Bot == 'X') ? 'O' : 'X'; // Tentukan lawan
+        int score = evaluate(Bot); // Evaluasi skor papan saat ini
+    
+        // Basis Kasus: Jika permainan selesai
+        if (score == 10 || score == -10) return score; // Menang/Kalah
+        if (isDraw()) return 0; // Seri
+    
+        if (isMaximizing) { // Bot mencoba memaksimalkan
+            int bestScore = Integer.MIN_VALUE;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (input[i][j] == ' ') {
+                        input[i][j] = Bot; // Coba langkah Bot
+                        bestScore = Math.max(bestScore, minimax(false, Bot)); // Rekursi untuk lawan
+                        input[i][j] = ' '; // Kembalikan papan
+                    }
+                }
+            }
+            return bestScore;
+        } else { // Pemain mencoba meminimalkan
+            int bestScore = Integer.MAX_VALUE;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (input[i][j] == ' ') {
+                        input[i][j] = Player; // Coba langkah lawan
+                        bestScore = Math.min(bestScore, minimax(true, Bot)); // Rekursi untuk Bot
+                        input[i][j] = ' '; // Kembalikan papan
+                    }
+                }
+            }
+            return bestScore;
+        }
+    }
+    
+    /**
+     * Mengevaluasi skor papan permainan saat ini.
+     * 
+     * @param Bot karakter bot ('X' atau 'O').
+     * @return 
+     * <strong><i>10</i></strong>, Jika bot menang. 
+     * <li><strong><i>-10</i></strong>, Jika bot kalah.
+     * <li><strong><i>0</i></strong>, Jika hasil permainan seri.
+     */
+    public static int evaluate(char Bot) {
+        char Player = (Bot == 'X') ? 'O' : 'X';
+    
+        // Periksa baris
+        for (int i = 0; i < 3; i++) {
+            if (input[i][0] == input[i][1] && input[i][1] == input[i][2]) {
+                if (input[i][0] == Bot) return 10;
+                if (input[i][0] == Player) return -10;
+            }
+        }
+    
+        // Periksa kolom
+        for (int j = 0; j < 3; j++) {
+            if (input[0][j] == input[1][j] && input[1][j] == input[2][j]) {
+                if (input[0][j] == Bot) return 10;
+                if (input[0][j] == Player) return -10;
+            }
+        }
+    
+        // Periksa diagonal
+        if (input[0][0] == input[1][1] && input[1][1] == input[2][2]) {
+            if (input[0][0] == Bot) return 10;
+            if (input[0][0] == Player) return -10;
+        }
+        if (input[0][2] == input[1][1] && input[1][1] == input[2][0]) {
+            if (input[0][2] == Bot) return 10;
+            if (input[0][2] == Player) return -10;
+        }
+    
+        return 0; // Tidak ada pemenang
+    }
 
     /**
      * Pengaturan permainan Player vs Player (PvP).
@@ -688,6 +670,22 @@ public class TicTacToe {
     }
     
     /**
+     * Mengecek apakah permainan berakhir dengan hasil seri.
+     * 
+     * @return 
+     * <strong><i>True</i></strong> jika ada ruang yang kosong. 
+     * <li><strong><i>False</i></strong> jika tidak.
+     */
+    public static boolean isDraw() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (input[i][j] == ' ') return false; // Jika ada ruang kosong, belum seri
+            }
+        }
+        return true;
+    }
+
+    /**
      * Memulai permainan TicTacToe.
      * Pemain dapat memilih mode PvP atau PvB, serta tingkat kesulitan bot.
     */
@@ -764,7 +762,6 @@ public class TicTacToe {
             }    
         }   
     }
-
 
     /**
      * Metode utama untuk menjalankan program.
