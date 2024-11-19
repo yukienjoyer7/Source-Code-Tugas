@@ -34,7 +34,6 @@ public class TicTacToe {
     /**
     * Scanner untuk membaca input dari pemain.
     */
-
     private static Scanner scan = new Scanner(System.in);
     
     /**
