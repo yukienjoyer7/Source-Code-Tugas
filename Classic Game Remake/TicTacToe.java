@@ -49,8 +49,7 @@ public class TicTacToe {
      * @param durationInMilliseconds durasi jeda antar titik dalam milidetik.
      *                               Misalnya, jika 500 diberikan, akan ada jeda 500 ms antara tiap titik.
      * 
-     * @throws InterruptedException jika thread yang sedang tidur terinterupsi.
-     *                              (Ditangani secara internal dengan mengatur ulang status interupsi.)
+     * @throws InterruptedException wajib ada.
      */
     public static void loading(int durationInMilliseconds) {
         int amountOfDots = (int) (Math.random() * 3) + 3; // Random antara 3 hingga 5
