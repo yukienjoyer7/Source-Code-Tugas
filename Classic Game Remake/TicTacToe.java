@@ -21,7 +21,7 @@ public class TicTacToe {
     * Matriks 3x3 untuk merepresentasikan papan permainan.
     * Inisialisasi papan dengan karakter kosong (' ').
     */
-    static char [][] input = {
+    static char [][] board = {
     {' ', ' ', ' '},
     {' ', ' ', ' '},
     {' ', ' ', ' '},}; // Mulai dengan ruang kosong
@@ -98,7 +98,7 @@ public class TicTacToe {
     public static void printGameOver(String result, int mode, int state){
         System.out.println("======================= Game Over =====================");
         if (result.equals("Win")){
-            System.out.print("              Pemenangnya adalah ");
+            System.out.print("              *Pemenangnya adalah ");
             if (mode == 1){
                 System.out.println("Player" + ((counter % 2 != 0) ? "2(O)" : "1(X)") + "!");
             }
@@ -148,7 +148,7 @@ public class TicTacToe {
         for (int i = 0; i < 3; i++) {
             System.out.print("Baris " + (i+1) + "    "); // Label baris
             for (int j = 0; j < 3; j++) {
-                System.out.print("| " + input[i][j] + " ");
+                System.out.print("| " + board[i][j] + " ");
             }
             System.out.println("|");
             System.out.println("           -------------"); // Garis pemisah antar baris
@@ -178,7 +178,7 @@ public class TicTacToe {
     public static void clearBoard(){
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                input[i][j] = ' ' ;// Jika ada ruang kosong, belum seri
+                board[i][j] = ' ' ;
             }
         }
     }
@@ -193,7 +193,7 @@ public class TicTacToe {
      *   <li>Pemain tidak dapat memilih sel yang sudah ditempati.</li>
      * </ul>
      * 
-     * @param player karakter pemain yang akan menandai langkahnya di papan (misalnya 'X' atau 'O').
+     * @param currentPlayer karakter pemain yang akan menandai langkahnya di papan (misalnya 'X' atau 'O').
      * 
      * <p>Proses input:</p>
      * <ol>
@@ -210,26 +210,39 @@ public class TicTacToe {
      * // Papan akan diperbarui dengan simbol X pada posisi (0, 1) dalam array.
      * </pre>
      */
-    public static void inputPlayer (char player){
+    public static void inputPlayer (char currentPlayer){
         int row, column;
 
         while (true){
-            System.out.printf("Masukkan baris (1, 2, atau 3) untuk pemain %c: ", player);
+            System.out.printf("Masukkan baris (1, 2, atau 3) untuk pemain %c: ", currentPlayer);
             row = scan.nextInt() - 1;
-            System.out.printf("Masukkan kolom (1, 2, atau 3) untuk pemain %c: ", player);
-            column = scan.nextInt() - 1;
-                
-            // Cek apakah input berada di luar batas papan
-            if (row < 0 || row > 2 || column < 0 || column > 2) {
-                System.out.println("Langkah tidak valid: Baris dan kolom harus antara 1 dan 3. Coba lagi.");
+            while(true){
+                if (row > 2 || row < 0){
+                    System.out.print("Langkah tidak valid: Baris harus antara 1 dan 3. Coba lagi.(1/2/3): ");
+                    row = scan.nextInt() - 1;
+                    continue;
+                }
+                break;
             }
+            
+            System.out.printf("Masukkan kolom (1, 2, atau 3) untuk pemain %c: ", currentPlayer);
+            column = scan.nextInt() - 1;
+            while (true){
+                if (column > 2 || column < 0){
+                    System.out.print("Langkah tidak valid: Baris harus antara 1 dan 3. Coba lagi.(1/2/3): ");
+                    row = scan.nextInt() - 1;
+                    continue;
+                }
+                break;
+            }
+            
             // Cek apakah posisi sudah ditempati
-            else if (input[row][column] != ' ') {
+            if (board[row][column] != ' ') {
                 System.out.println("Langkah tidak valid: Sel sudah ditempati. Coba lagi.");
             }
             // Input valid
             else {
-                input[row][column] = player;
+                board[row][column] = currentPlayer;
                 break;
             }
         }
@@ -270,38 +283,44 @@ public class TicTacToe {
             case 3:
                 botLogic_Impossible(Bot);
                 break;
+            default:
+                System.out.println("Congrats, You found a bug, please contact me at discord @crtal7, and kindly tell me about the bug :D");
+                break;
         }
     }   
 
     /**
-     * Logika bot tingkat Easy: memilih langkah secara acak.
-     * 
-     * @param Bot karakter bot ('X' atau 'O').
+     * Mengimplementasikan logika untuk bot pada mode "Easy" dalam permainan Tic-Tac-Toe.
+     * Bot akan memilih secara acak sel kosong pada papan dan menempatkan simbolnya.
+     *
+     * @param Bot karakter yang mewakili simbol bot (misalnya, 'X' atau 'O').
+     *            Simbol ini akan ditempatkan oleh bot pada papan.
      */
-    public static void botLogic_Easy(char Bot){
-        while (true){
+    public static void botLogic_Easy(char Bot) {
+        while (true) {
             int row_random = (int)(Math.random() * 3);
             int column_random = (int)(Math.random() * 3);
-    
-            if (input[row_random][column_random] == ' '){
-                input[row_random][column_random] = Bot;
+
+            if (board[row_random][column_random] == ' ') {
+                board[row_random][column_random] = Bot;
                 break;
             }
         }
     }
      
-   /**
-    * Logika bot tingkat Medium: memprioritaskan menang atau memblok langkah lawan.
-     * 
-     * @param Bot karakter bot ('X' atau 'O').
-     * @param Player karakter lawan bot.
+    /**
+     * Mengimplementasikan logika untuk bot pada mode "Sedang" dalam permainan Tic-Tac-Toe.
+     * Bot akan memprioritaskan langkah untuk memenangkan permainan, 
+     * atau memblokir langkah pemain yang dapat menang, 
+     * jika tidak ada opsi tersebut, bot akan memilih langkah secara acak.
+     *
+     * @param Bot karakter yang mewakili simbol bot (misalnya, 'X' atau 'O').
+     * @param Player karakter yang mewakili simbol pemain (misalnya, 'X' atau 'O').
      */
-    public static void botLogic_Medium(char Bot, char Player){
-
-        if (winOne(Bot, Player)){
+    public static void botLogic_Medium(char Bot, char Player) {
+        if (winOne(Bot, Player)) {
             return; 
-        }
-        else if(blockOne(Bot, Player)){
+        } else if (blockOne(Bot, Player)) {
             return;
         }
 
@@ -321,10 +340,10 @@ public class TicTacToe {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 // Jika sel kosong
-                if (input[i][j] == ' ') {
-                    input[i][j] = Bot; // Coba langkah Bot
+                if (board[i][j] == ' ') {
+                    board[i][j] = Bot; // Coba langkah Bot
                     int score = minimax(false, Bot); // Panggil Minimax untuk pemain lawan
-                    input[i][j] = ' '; // Kembalikan papan seperti semula
+                    board[i][j] = ' '; // Kembalikan papan seperti semula
                     if (score > bestScore) { // Jika skor langkah ini lebih baik
                         bestScore = score;
                         bestRow = i;
@@ -335,44 +354,45 @@ public class TicTacToe {
         }
         // Buat langkah terbaik
         if (bestRow != -1 && bestCol != -1) {
-            input[bestRow][bestCol] = Bot;
+            board[bestRow][bestCol] = Bot;
         }
     }
     
     /**
-     * Logika bot untuk mengambil langkah menang jika memungkinkan.
-     * 
-     * @param Bot karakter bot ('X' atau 'O').
-     * @param Player karakter lawan bot.
-     * @return 
-     * <strong><i>True</i></strong> jika ada langkah menang yang mungkin. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * Memeriksa apakah bot memiliki kesempatan untuk memenangkan permainan
+     * dalam satu langkah dan menempatkan simbolnya untuk menang jika memungkinkan.
+     *
+     * @param Bot karakter yang mewakili simbol bot (misalnya, 'X' atau 'O').
+     * @param Player karakter yang mewakili simbol pemain (misalnya, 'X' atau 'O').
+     * @return
+     * <code>True</code> jika bot bisa menang dalam satu langkah. 
+     * <li><code>False</code> jika tidak ada langkah kemenangan.
      */
     public static Boolean winOne (char Bot, char Player){
         // Cek setiap baris
         for (int i = 0; i < 3; i++) {
-            if (input[i][0] == Bot && input[i][1] == Bot && input[i][2] == ' ') {
-                input[i][2] = Bot;
+            if (board[i][0] == Bot && board[i][1] == Bot && board[i][2] == ' ') {
+                board[i][2] = Bot;
                 return true;
-            } else if (input[i][1] == Bot && input[i][2] == Bot && input[i][0] == ' ') {
-                input[i][0] = Bot;
+            } else if (board[i][1] == Bot && board[i][2] == Bot && board[i][0] == ' ') {
+                board[i][0] = Bot;
                 return true;
-            } else if (input[i][0] == Bot && input[i][2] == Bot && input[i][1] == ' ') {
-                input[i][1] = Bot;
+            } else if (board[i][0] == Bot && board[i][2] == Bot && board[i][1] == ' ') {
+                board[i][1] = Bot;
                 return true;
             }
         }
         
         // Cek setiap kolom
         for (int j = 0; j < 3; j++) {
-            if (input[0][j] == Bot && input[1][j] == Bot && input[2][j] == ' ') {
-                input[2][j] = Bot;
+            if (board[0][j] == Bot && board[1][j] == Bot && board[2][j] == ' ') {
+                board[2][j] = Bot;
                 return true;
-            } else if (input[1][j] == Bot && input[2][j] == Bot && input[0][j] == ' ') {
-                input[0][j] = Bot;
+            } else if (board[1][j] == Bot && board[2][j] == Bot && board[0][j] == ' ') {
+                board[0][j] = Bot;
                 return true;
-            } else if (input[0][j] == Bot && input[2][j] == Bot && input[1][j] == ' ') {
-                input[1][j] = Bot;
+            } else if (board[0][j] == Bot && board[2][j] == Bot && board[1][j] == ' ') {
+                board[1][j] = Bot;
                 return true;
             }
         }
@@ -380,26 +400,26 @@ public class TicTacToe {
         // Cek diagonal
 
         // Diagonal Kiri (row 0,0)
-        if (input[0][0] == Bot && input[1][1] == Bot && input[2][2] == ' ') {
-            input[2][2] = Bot;
+        if (board[0][0] == Bot && board[1][1] == Bot && board[2][2] == ' ') {
+            board[2][2] = Bot;
             return true;
-        } else if (input[1][1] == Bot && input[2][2] == Bot && input[0][0] == ' ') {
-            input[0][0] = Bot;
+        } else if (board[1][1] == Bot && board[2][2] == Bot && board[0][0] == ' ') {
+            board[0][0] = Bot;
             return true;
-        } else if (input[0][0] == Bot && input[2][2] == Bot && input[1][1] == ' ') {
-            input[1][1] = Bot;
+        } else if (board[0][0] == Bot && board[2][2] == Bot && board[1][1] == ' ') {
+            board[1][1] = Bot;
             return true;
         }
         
         // Diagonal Kanan (row 0,2)
-        if (input[0][2] == Bot && input[1][1] == Bot && input[2][0] == ' ') {
-            input[2][0] = Bot;
+        if (board[0][2] == Bot && board[1][1] == Bot && board[2][0] == ' ') {
+            board[2][0] = Bot;
             return true;
-        } else if (input[1][1] == Bot && input[2][0] == Bot && input[0][2] == ' ') {
-            input[0][2] = Bot;
+        } else if (board[1][1] == Bot && board[2][0] == Bot && board[0][2] == ' ') {
+            board[0][2] = Bot;
             return true;
-        } else if (input[0][2] == Bot && input[2][0] == Bot && input[1][1] == ' ') {
-            input[1][1] = Bot;
+        } else if (board[0][2] == Bot && board[2][0] == Bot && board[1][1] == ' ') {
+            board[1][1] = Bot;
             return true;
         }
         
@@ -407,39 +427,40 @@ public class TicTacToe {
     }
 
     /**
-     * Logika bot untuk memblok langkah lawan yang dapat menang.
-     * 
-     * @param Bot karakter bot ('X' atau 'O').
-     * @param Player karakter lawan bot.
-     * @return 
-     * <strong><i>True</i></strong> jika ada langkah blok yang mungkin. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * Memeriksa apakah pemain memiliki kesempatan untuk menang dalam satu langkah
+     * dan menempatkan simbol bot untuk memblokir langkah tersebut.
+     *
+     * @param Bot karakter yang mewakili simbol bot (misalnya, 'X' atau 'O').
+     * @param Player karakter yang mewakili simbol pemain (misalnya, 'X' atau 'O').
+     * @return
+     * <code>True</code> jika bot berhasil memblokir langkah pemain yang hampir menang 
+     * <li><code>False</code> jika tidak ada langkah untuk diblokir.
      */
     public static Boolean blockOne (char Bot, char Player){
         // Cek setiap baris
         for (int i = 0; i < 3; i++) {
-            if (input[i][0] == Player && input[i][1] == Player && input[i][2] == ' ') {
-                input[i][2] = Bot;
+            if (board[i][0] == Player && board[i][1] == Player && board[i][2] == ' ') {
+                board[i][2] = Bot;
                 return true;
-            } else if (input[i][1] == Player && input[i][2] == Player && input[i][0] == ' ') {
-                input[i][0] = Bot;
+            } else if (board[i][1] == Player && board[i][2] == Player && board[i][0] == ' ') {
+                board[i][0] = Bot;
                 return true;
-            } else if (input[i][0] == Player && input[i][2] == Player && input[i][1] == ' ') {
-                input[i][1] = Bot;
+            } else if (board[i][0] == Player && board[i][2] == Player && board[i][1] == ' ') {
+                board[i][1] = Bot;
                 return true;
             }
         }
         
         // Cek setiap kolom
         for (int j = 0; j < 3; j++) {
-            if (input[0][j] == Player && input[1][j] == Player && input[2][j] == ' ') {
-                input[2][j] = Bot;
+            if (board[0][j] == Player && board[1][j] == Player && board[2][j] == ' ') {
+                board[2][j] = Bot;
                 return true;
-            } else if (input[1][j] == Player && input[2][j] == Player && input[0][j] == ' ') {
-                input[0][j] = Bot;
+            } else if (board[1][j] == Player && board[2][j] == Player && board[0][j] == ' ') {
+                board[0][j] = Bot;
                 return true;
-            } else if (input[0][j] == Player && input[2][j] == Player && input[1][j] == ' ') {
-                input[1][j] = Bot;
+            } else if (board[0][j] == Player && board[2][j] == Player && board[1][j] == ' ') {
+                board[1][j] = Bot;
                 return true;
             }
         }
@@ -447,26 +468,26 @@ public class TicTacToe {
         // Cek diagonal
 
         // Diagonal Kiri (row 0,0)
-        if (input[0][0] == Player && input[1][1] == Player && input[2][2] == ' ') {
-            input[2][2] = Bot;
+        if (board[0][0] == Player && board[1][1] == Player && board[2][2] == ' ') {
+            board[2][2] = Bot;
             return true;
-        } else if (input[1][1] == Player && input[2][2] == Player && input[0][0] == ' ') {
-            input[0][0] = Bot;
+        } else if (board[1][1] == Player && board[2][2] == Player && board[0][0] == ' ') {
+            board[0][0] = Bot;
             return true;
-        } else if (input[0][0] == Player && input[2][2] == Player && input[1][1] == ' ') {
-            input[1][1] = Bot;
+        } else if (board[0][0] == Player && board[2][2] == Player && board[1][1] == ' ') {
+            board[1][1] = Bot;
             return true;
         }
         
         // Diagonal Kanan (row 0,2)
-        if (input[0][2] == Player && input[1][1] == Player && input[2][0] == ' ') {
-            input[2][0] = Bot;
+        if (board[0][2] == Player && board[1][1] == Player && board[2][0] == ' ') {
+            board[2][0] = Bot;
             return true;
-        } else if (input[1][1] == Player && input[2][0] == Player && input[0][2] == ' ') {
-            input[0][2] = Bot;
+        } else if (board[1][1] == Player && board[2][0] == Player && board[0][2] == ' ') {
+            board[0][2] = Bot;
             return true;
-        } else if (input[0][2] == Player && input[2][0] == Player && input[1][1] == ' ') {
-            input[1][1] = Bot;
+        } else if (board[0][2] == Player && board[2][0] == Player && board[1][1] == ' ') {
+            board[1][1] = Bot;
             return true;
         }
         
@@ -494,10 +515,10 @@ public class TicTacToe {
             int bestScore = Integer.MIN_VALUE;
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (input[i][j] == ' ') {
-                        input[i][j] = Bot; // Coba langkah Bot
+                    if (board[i][j] == ' ') {
+                        board[i][j] = Bot; // Coba langkah Bot
                         bestScore = Math.max(bestScore, minimax(false, Bot)); // Rekursi untuk lawan
-                        input[i][j] = ' '; // Kembalikan papan
+                        board[i][j] = ' '; // Kembalikan papan
                     }
                 }
             }
@@ -506,10 +527,10 @@ public class TicTacToe {
             int bestScore = Integer.MAX_VALUE;
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (input[i][j] == ' ') {
-                        input[i][j] = Player; // Coba langkah lawan
+                    if (board[i][j] == ' ') {
+                        board[i][j] = Player; // Coba langkah lawan
                         bestScore = Math.min(bestScore, minimax(true, Bot)); // Rekursi untuk Bot
-                        input[i][j] = ' '; // Kembalikan papan
+                        board[i][j] = ' '; // Kembalikan papan
                     }
                 }
             }
@@ -531,36 +552,37 @@ public class TicTacToe {
     
         // Periksa baris
         for (int i = 0; i < 3; i++) {
-            if (input[i][0] == input[i][1] && input[i][1] == input[i][2]) {
-                if (input[i][0] == Bot) return 10;
-                if (input[i][0] == Player) return -10;
+            if (board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
+                if (board[i][0] == Bot) return 10;
+                if (board[i][0] == Player) return -10;
             }
         }
     
         // Periksa kolom
         for (int j = 0; j < 3; j++) {
-            if (input[0][j] == input[1][j] && input[1][j] == input[2][j]) {
-                if (input[0][j] == Bot) return 10;
-                if (input[0][j] == Player) return -10;
+            if (board[0][j] == board[1][j] && board[1][j] == board[2][j]) {
+                if (board[0][j] == Bot) return 10;
+                if (board[0][j] == Player) return -10;
             }
         }
     
         // Periksa diagonal
-        if (input[0][0] == input[1][1] && input[1][1] == input[2][2]) {
-            if (input[0][0] == Bot) return 10;
-            if (input[0][0] == Player) return -10;
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            if (board[0][0] == Bot) return 10;
+            if (board[0][0] == Player) return -10;
         }
-        if (input[0][2] == input[1][1] && input[1][1] == input[2][0]) {
-            if (input[0][2] == Bot) return 10;
-            if (input[0][2] == Player) return -10;
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+            if (board[0][2] == Bot) return 10;
+            if (board[0][2] == Player) return -10;
         }
     
         return 0; // Tidak ada pemenang
     }
 
     /**
-     * Pengaturan permainan Player vs Player (PvP).
-     * Mengatur giliran pemain secara bergantian.
+     * Mengatur giliran pemain dalam mode Player vs Player (PvP) pada permainan Tic-Tac-Toe.
+     * Fungsi ini menentukan simbol pemain berdasarkan giliran (X atau O)
+     * dan memperbarui giliran dengan menambah nilai penghitung (counter).
      */
     public static void settingPvP() {
         inputPlayer((counter % 2 != 0) ? 'X' : 'O');
@@ -568,40 +590,50 @@ public class TicTacToe {
     }
 
     /**
-     * Pengaturan permainan Player vs Bot (PvB).
-     * Menentukan giliran berdasarkan pilihan pemain dan tingkat kesulitan bot.
-     * 
-     * @param state status giliran dari pengguna (1 = pemain pertama (X), 2 = pemain kedua (O)).
+     * Mengatur giliran pemain dan bot dalam mode Player vs Bot (PvB) pada permainan Tic-Tac-Toe.
+     * Fungsi ini menentukan giliran berdasarkan status permainan dan tingkat kesulitan bot.
+     *
+     * @param state nilai integer yang menunjukkan status permainan:
+     *              <ul>
+     *               <li><strong>State 1</strong>: Pemain = 'X', Bot = 'O'</li>
+     *               <li><strong>State 2</strong>: Pemain = 'O', Bot = 'X'</li>
+     *              </ul>
      * @param difficulty tingkat kesulitan bot.
+     *                   Tingkat kesulitan ini akan diteruskan ke fungsi logika bot.
+     *              <ul>
+     *               <li><strong>difficulty 1:</strong>: Easy </li>
+     *               <li><strong>difficulty 2:</strong>: Medium</li>
+     *               <li><strong>difficulty 3:</strong>: Imposibble</li>
+     *              </ul>
      */
     public static void settingPvB(int state, int difficulty) {
 
-        // State 1, Player = X, Bot = O
+        // State 1: Pemain = 'X', Bot = 'O'
         if (state == 1) {
             if (counter % 2 != 0) {
-                inputPlayer('X');
+                inputPlayer('X'); // Giliran pemain
             } else {
-                inputBot('O', 'X', difficulty);
+                inputBot('O', 'X', difficulty); // Giliran bot
             }
         }
-        // State 2, Player = O, Bot = X
+        // State 2: Pemain = 'O', Bot = 'X'
         else if (state == 2) {
             if (counter % 2 != 0) {
-                inputBot('X', 'O', difficulty);
+                inputBot('X', 'O', difficulty); // Giliran bot
             } else {
-                inputPlayer('O');
+                inputPlayer('O'); // Giliran pemain
             }
-            
         }
-        ++counter;
+
+        ++counter; // Memperbarui giliran
     }
 
     /**
      * Mengecek apakah permainan sudah berakhir (menang, kalah, atau seri).
      * 
      * @return 
-     * <strong><i>True</i></strong> jika permainan masih berlanjut. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * <code>true</code> jika permainan masih berlanjut. 
+     * <li><code>false</code> jika tidak.
      */
     public static boolean ifEnd(int mode, int state){
         if (checkVertical()|| checkHorizontal() || checkDiagonal()){
@@ -624,70 +656,174 @@ public class TicTacToe {
     }
 
     /**
-     * Mengecek apakah ada pemenang pada diagonal.
-     * 
+     * Memeriksa apakah ada pemenang yang terbentuk di diagonal papan permainan.
+     * <p>
+     * Fungsi ini memeriksa dua diagonal di papan Tic-Tac-Toe:
+     * <ul>
+     *     <li>Diagonal kiri atas ke kanan bawah (board[0][0], board[1][1], board[2][2])</li>
+     *     <li>Diagonal kanan atas ke kiri bawah (board[0][2], board[1][1], board[2][0])</li>
+     * </ul>
+     * Jika ada tiga simbol yang sama pada salah satu diagonal, maka fungsi ini akan mengembalikan <code>true</code>,
+     * yang menandakan bahwa pemain telah memenangkan permainan di diagonal tersebut.
+     * </p>
+     *
+     * <h3>Detail Pengoperasian:</h3>
+     * <p>
+     * 1. Fungsi ini memeriksa apakah simbol pada diagonal kiri atas ke kanan bawah atau diagonal kanan atas ke kiri bawah
+     *    memiliki simbol yang sama dan bukan spasi (' ').
+     * <br>2. Jika salah satu diagonal memiliki tiga simbol yang sama, maka fungsi ini akan mengembalikan nilai <code>true</code>.
+     * <br>3. Jika tidak ada diagonal yang membentuk kemenangan, fungsi ini akan mengembalikan nilai <code>false</code>.
+     * </p>
+     *
      * @return 
-     * <strong><i>True</i></strong> jika ada pemenang pada diagonal. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * <code>True</code> jika ada pemenang pada salah satu diagonal, 
+     * <li><Code>false</code> jika tidak ada.
      */
     public static boolean checkDiagonal(){
-        boolean diagonal_kiri = ((input[0][0] == input[1][1] && input[1][1] == input[2][2]) && input[0][0] != ' ');
-        boolean diagonal_kanan = ((input[0][2] == input[1][1] && input[1][1] == input[2][0]) && input[0][2] != ' ');
+        boolean diagonal_kiri = ((board[0][0] == board[1][1] && board[1][1] == board[2][2]) && board[0][0] != ' ');
+        boolean diagonal_kanan = ((board[0][2] == board[1][1] && board[1][1] == board[2][0]) && board[0][2] != ' ');
         return diagonal_kiri || diagonal_kanan;
     }
 
     /**
-     * Mengecek apakah ada pemenang pada baris.
-     * 
+     * Memeriksa apakah ada pemenang yang terbentuk di baris papan permainan.
+     * <p>
+     * Fungsi ini memeriksa setiap baris pada papan Tic-Tac-Toe untuk menentukan apakah ada tiga simbol yang sama dalam
+     * satu baris. Jika ada tiga simbol yang sama dan bukan spasi (' '), maka fungsi ini akan mengembalikan <code>true</code>,
+     * yang menandakan bahwa pemain telah memenangkan permainan pada baris tersebut.
+     * </p>
+     *
+     * <h3>Detail Pengoperasian:</h3>
+     * <p>
+     * 1. Fungsi ini iterasi melalui setiap baris pada papan permainan.
+     * <br>2. Untuk setiap baris, fungsi memeriksa apakah ketiga elemen dalam baris tersebut memiliki simbol yang sama.
+     * <br>3. Jika ketiga simbol pada suatu baris sama dan bukan spasi (' '), maka fungsi ini akan mengembalikan nilai <code>true</code>.
+     * <br>4. Jika tidak ada baris yang memenuhi kriteria tersebut, fungsi ini akan mengembalikan nilai <code>false</code>.
+     * </p>
+     *
      * @return 
-     * <strong><i>True</i></strong> jika ada pemenang pada baris. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * <code>True</code> jika ada pemenang pada salah satu baris, 
+     * <li><code>False</code> jika tidak ada.
      */
     public static boolean checkHorizontal() {
         for (int row = 0; row < 3; row++) {
-            if (input[row][0] == input[row][1] && input[row][1] == input[row][2] && input[row][0] != ' ') {
-                return true; 
+            if (board[row][0] == board[row][1] && board[row][1] == board[row][2] && board[row][0] != ' ') {
+                return true;
             }
         }
-        return false; 
+        return false;
     }
+
     
     /**
-     * Mengecek apakah ada pemenang pada kolom.
-     * 
+     * Memeriksa apakah ada pemenang yang terbentuk di kolom papan permainan.
+     * <p>
+     * Fungsi ini memeriksa setiap kolom pada papan Tic-Tac-Toe untuk menentukan apakah ada tiga simbol yang sama dalam
+     * satu kolom. Jika ada tiga simbol yang sama dan bukan spasi (' '), maka fungsi ini akan mengembalikan <code>true</code>,
+     * yang menandakan bahwa pemain telah memenangkan permainan pada kolom tersebut.
+     * </p>
+     *
+     * <h3>Detail Pengoperasian:</h3>
+     * <p>
+     * 1. Fungsi ini iterasi melalui setiap kolom pada papan permainan.
+     * <br>2. Untuk setiap kolom, fungsi memeriksa apakah ketiga elemen dalam kolom tersebut memiliki simbol yang sama.
+     * <br>3. Jika ketiga simbol dalam suatu kolom sama dan bukan spasi (' '), maka fungsi ini akan mengembalikan nilai <code>true</code>.
+     * <br>4. Jika tidak ada kolom yang memenuhi kriteria tersebut, fungsi ini akan mengembalikan nilai <code>false</code>.
+     * </p>
+     *
      * @return 
-     * <strong><i>True</i></strong> jika ada pemenang pada kolom. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * <code>True</code> jika ada pemenang pada salah satu kolom, 
+     * <li><code>False</code> jika tidak ada.
      */
     public static boolean checkVertical() {
         for (int columnLoop = 0; columnLoop < 3; columnLoop++) {
-            if (input[0][columnLoop] == input[1][columnLoop] && input[1][columnLoop] == input[2][columnLoop] && input[0][columnLoop] != ' ') {
-                return true; 
+            if (board[0][columnLoop] == board[1][columnLoop] && board[1][columnLoop] == board[2][columnLoop] && board[0][columnLoop] != ' ') {
+                return true;
             }
         }
-        return false; 
+        return false;
     }
     
     /**
-     * Mengecek apakah permainan berakhir dengan hasil seri.
-     * 
+     * Memeriksa apakah permainan berakhir dengan hasil seri.
+     * <p>
+     * Fungsi ini memeriksa seluruh papan Tic-Tac-Toe untuk menentukan apakah semua posisi sudah terisi
+     * dan tidak ada ruang kosong lagi (' '). Jika seluruh papan terisi dan tidak ada pemenang, maka permainan berakhir seri.
+     * </p>
+     *
+     * <h3>Detail Pengoperasian:</h3>
+     * <p>
+     * 1. Fungsi ini akan memeriksa setiap posisi di papan Tic-Tac-Toe.
+     * <br>2. Jika ada satu posisi yang masih kosong (bernilai <code>' '</code>), maka fungsi ini akan mengembalikan <code>false</code>,
+     *    menandakan permainan belum berakhir seri.
+     * <br>3. Jika semua posisi sudah terisi dan tidak ada ruang kosong, fungsi ini akan mengembalikan nilai <code>true</code>,
+     *    menandakan permainan berakhir seri.
+     * </p>
+     *
      * @return 
-     * <strong><i>True</i></strong> jika ada ruang yang kosong. 
-     * <li><strong><i>False</i></strong> jika tidak.
+     * <code>true</code> jika permainan berakhir seri (semua posisi terisi dan tidak ada pemenang),
+     * <li><code>false</code> jika permainan masih berlangsung.
      */
     public static boolean isDraw() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (input[i][j] == ' ') return false; // Jika ada ruang kosong, belum seri
+                if (board[i][j] == ' ') return false; // Jika ada ruang kosong, belum seri
             }
         }
         return true;
     }
 
     /**
-     * Memulai permainan TicTacToe.
-     * Pemain dapat memilih mode PvP atau PvB, serta tingkat kesulitan bot.
-    */
+     * Memulai permainan Tic-Tac-Toe dengan memilih mode permainan dan pengaturan lainnya.
+     * <p>
+     * Fungsi ini mengatur permainan berdasarkan pilihan pemain untuk mode Player vs Player (PvP)
+     * atau Player vs Bot (PvB). Pemain juga dapat memilih simbol dan tingkat kesulitan bot dalam mode PvB.
+     * Setelah permainan selesai, pemain dapat memilih untuk bermain lagi.
+     * </p>
+     *
+     * <h2>Alur Permainan:</h2>
+     * <ol>
+     *     <li><strong>Mode Permainan</strong> - Pemain dapat memilih antara:
+     *         <ul>
+     *             <li>1. Player vs Player</li>
+     *             <li>2. Player vs Bot</li>
+     *         </ul>
+     *     </li>
+     *     <li><strong>Pemilihan Pion (untuk mode PvB)</strong> - Pemain memilih simbol mereka:
+     *         <ul>
+     *             <li>1. X (Giliran pertama)</li>
+     *             <li>2. O (Giliran kedua)</li>
+     *         </ul>
+     *     </li>
+     *     <li><strong>Pemilihan Kesulitan (untuk mode PvB)</strong> - Pemain memilih tingkat kesulitan bot:
+     *         <ul>
+     *             <li>1. Easy</li>
+     *             <li>2. Medium</li>
+     *             <li>3. Impossible</li>
+     *         </ul>
+     *     </li>
+     *     <li><strong>Pertanyaan Ulang (Setelah permainan selesai)</strong> - Pemain diminta memilih apakah ingin bermain lagi:
+     *         <ul>
+     *             <li>1. Ya</li>
+     *             <li>2. Tidak</li>
+     *         </ul>
+     *     </li>
+     * </ol>
+     *
+     * <p>Setelah permainan selesai, fungsi ini akan menanyakan apakah pemain ingin bermain lagi.</p>
+     *
+     * <h3>Detail Pengoperasian:</h3>
+     * <p>
+     * 1. Pemain memilih mode permainan dengan memilih angka 1 atau 2.
+     * <br>2. Dalam mode PvB, pemain memilih pion dan tingkat kesulitan bot.
+     * <br>3. Setelah permainan berakhir, pemain dapat memilih untuk bermain lagi atau tidak.
+     * </p>
+     *
+     * @see #settingPvP()
+     * @see #settingPvB(int, int)
+     * @see #ifEnd(int, int)
+     * @see #loading(int)
+     */
     public static void start(){
         boolean repeat = true;
         System.out.println("Selamat datang di permainan Tic Tac Toe!");
@@ -698,43 +834,49 @@ public class TicTacToe {
             System.out.println("2. Player vs Bot");
             System.out.print("Mode yang Anda pilih (1/2): ");
             int mode = scan.nextInt();
-    
-            if(mode == 1){
-                System.out.print("Memulai permainan");
-                loading(600);
-                while (!end){
-                    printBoard();
-                    settingPvP();
-                    end = ifEnd(mode, 0);
-                }
-            }
-            if(mode == 2){
-                System.out.println("\nSilakan pilih pion Anda:");
-                System.out.println("1. X (Giliran pertama)");
-                System.out.println("2. O (Giliran kedua)");
-                System.out.print("Ketikkan angka dari pion yang anda mau (1/2): ");
-                int state = scan.nextInt();
-                int difficulty = -1;
-    
-                while(difficulty >= 4 || difficulty <= 0){
-                    System.out.println("\nPilih tingkat kesulitan Bot:");
-                    System.out.println("1. Easy");
-                    System.out.println("2. Medium");
-                    System.out.println("3. Impossible");
-                    System.out.print("Tingkat kesulitan yang Anda pilih (1/2/3): ");
-                    difficulty = scan.nextInt();
-                    if (difficulty >= 4 || difficulty <= 0){
-                        System.out.println("Tingkat kesulitan tidak valid. Mohon masukkan opsi yang ada (1/2/3): ");
+            while (true){
+                if(mode == 1){
+                    System.out.print("Memulai permainan");
+                    loading(600);
+                    while (!end){
+                        printBoard();
+                        settingPvP();
+                        end = ifEnd(mode, 0);
                     }
+                    break;
                 }
-                System.out.print("Memulai permainan");
-                loading(600);     
-                while (!end){
-                    printBoard();
-                    settingPvB(state, difficulty);
-                    end = ifEnd(mode, state);
+                else if(mode == 2){
+                    System.out.println("\nSilakan pilih pion Anda:");
+                    System.out.println("1. X (Giliran pertama)");
+                    System.out.println("2. O (Giliran kedua)");
+                    System.out.print("Ketikkan angka dari pion yang anda mau (1/2): ");
+                    int state = scan.nextInt();
+                    int difficulty = -1;
+        
+                    while(difficulty >= 4 || difficulty <= 0){
+                        System.out.println("\nPilih tingkat kesulitan Bot:");
+                        System.out.println("1. Easy");
+                        System.out.println("2. Medium");
+                        System.out.println("3. Impossible");
+                        System.out.print("Tingkat kesulitan yang Anda pilih (1/2/3): ");
+                        difficulty = scan.nextInt();
+                        if (difficulty >= 4 || difficulty <= 0){
+                            System.out.println("Tingkat kesulitan tidak valid. Mohon masukkan opsi yang ada (1/2/3): ");
+                        }
+                    }
+                    System.out.print("Memulai permainan");
+                    loading(600);     
+                    while (!end){
+                        printBoard();
+                        settingPvB(state, difficulty);
+                        end = ifEnd(mode, state);
+                    }
+                    break;
                 }
+                System.out.println("Mode yang anda pilih tidak valid, mohon pilih opsi yang ada. (1/2):");
+                mode = scan.nextInt();
             }
+
             System.out.println("\nMau bermain lagi?");
             System.out.println("1.Ya");
             System.out.println("2.Tidak");
