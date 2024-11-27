@@ -495,13 +495,26 @@ public class TicTacToe {
     }
 
     /**
-     * Algoritma Minimax untuk mengevaluasi langkah terbaik bot.
-     * 
-     * @param isMaximizing apakah giliran untuk memaksimalkan (bot) atau meminimalkan (lawan).
-     * @param Bot karakter bot ('X' atau 'O').
-     * @return <strong><i>10</i></strong>, Jika bot menang.
-     * <li><strong><i>-10</i></strong>, Jika bot kalah.
-     * <li><strong><i>0</i></strong>, Jika hasil permainan seri.
+     * Fungsi Minimax untuk menentukan langkah terbaik bagi Bot dalam permainan Tic-Tac-Toe.
+     * <p>
+     * Fungsi ini digunakan untuk mengevaluasi papan permainan dan memilih langkah terbaik
+     * berdasarkan algoritma minimax. Bot akan berusaha memaksimalkan skor, sedangkan pemain
+     * akan berusaha meminimalkan skor.
+     * </p>
+     *
+     * <h3>Penjelasan:</h3>
+     * <p>
+     * 1. Fungsi ini akan mengevaluasi papan permainan berdasarkan apakah Bot menang, kalah, atau seri.
+     * <br>2. Fungsi ini kemudian mencoba setiap kemungkinan langkah, dan menggunakan rekursi untuk menentukan langkah terbaik
+     *    yang akan diambil oleh Bot atau pemain.
+     * <br>3. Bot akan berusaha memilih langkah yang memaksimalkan skor, sedangkan pemain akan berusaha memilih langkah yang
+     *    meminimalkan skor untuk Bot.
+     * </p>
+     *
+     * @param isMaximizing <code>true</code> jika saat ini giliran Bot untuk memaksimalkan skor,
+     *                     <code>false</code> jika giliran pemain untuk meminimalkan skor.
+     * @param Bot Simbol yang digunakan oleh Bot, biasanya 'X' atau 'O'.
+     * @return <strong>Skor terbaik</strong> yang dapat dicapai oleh Bot pada papan permainan saat ini.
      */
     public static int minimax(boolean isMaximizing, char Bot) {
         char Player = (Bot == 'X') ? 'O' : 'X'; // Tentukan lawan
@@ -543,9 +556,9 @@ public class TicTacToe {
      * 
      * @param Bot karakter bot ('X' atau 'O').
      * @return 
-     * <strong><i>10</i></strong>, Jika bot menang. 
-     * <li><strong><i>-10</i></strong>, Jika bot kalah.
-     * <li><strong><i>0</i></strong>, Jika hasil permainan seri.
+     * <code>10</code>, Jika bot menang. 
+     * <li><code>-10</code>, Jika bot kalah.
+     * <li><code>0</code>, Jika hasil permainan seri.
      */
     public static int evaluate(char Bot) {
         char Player = (Bot == 'X') ? 'O' : 'X';
