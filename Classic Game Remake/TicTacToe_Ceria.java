@@ -15,7 +15,7 @@ import java.lang.Thread;
  * @author Dionisius Seraf Saputra
  * @version 1.0
  */
-public class TicTacToe {
+public class TicTacToe_Ceria {
 
     /** 
     * Matriks 3x3 untuk merepresentasikan papan permainan.
@@ -98,7 +98,7 @@ public class TicTacToe {
     public static void printGameOver(String result, int mode, int state){
         System.out.println("======================= Game Over =====================");
         if (result.equals("Win")){
-            System.out.print("              *Pemenangnya adalah ");
+            System.out.print("              Pemenangnya adalah ");
             if (mode == 1){
                 System.out.println("Player" + ((counter % 2 != 0) ? "2(O)" : "1(X)") + "!");
             }
@@ -229,7 +229,7 @@ public class TicTacToe {
             column = scan.nextInt() - 1;
             while (true){
                 if (column > 2 || column < 0){
-                    System.out.print("Langkah tidak valid: Baris harus antara 1 dan 3. Coba lagi.(1/2/3): ");
+                    System.out.print("Langkah tidak valid: Kolom harus antara 1 dan 3. Coba lagi.(1/2/3): ");
                     row = scan.nextInt() - 1;
                     continue;
                 }
@@ -309,11 +309,12 @@ public class TicTacToe {
     }
      
     /**
+     * <p>
      * Mengimplementasikan logika untuk bot pada mode "Sedang" dalam permainan Tic-Tac-Toe.
      * Bot akan memprioritaskan langkah untuk memenangkan permainan, 
      * atau memblokir langkah pemain yang dapat menang, 
      * jika tidak ada opsi tersebut, bot akan memilih langkah secara acak.
-     *
+     *  </p>
      * @param Bot karakter yang mewakili simbol bot (misalnya, 'X' atau 'O').
      * @param Player karakter yang mewakili simbol pemain (misalnya, 'X' atau 'O').
      */
@@ -328,7 +329,7 @@ public class TicTacToe {
     }
 
     /**
-     * Logika bot tingkat Hard: menggunakan algoritma Minimax untuk memilih langkah terbaik.
+     * Logika bot tingkat Impossible: menggunakan algoritma Minimax untuk memilih langkah terbaik.
      * 
      * @param Bot karakter bot ('X' atau 'O').
      */
@@ -839,14 +840,24 @@ public class TicTacToe {
      */
     public static void start(){
         boolean repeat = true;
-        System.out.println("Selamat datang di permainan Tic Tac Toe!");
+        System.out.println("===========================================================");
+        System.out.println("          Selamat datang di Tic Tac Toe Ceria!");
+        System.out.println("===========================================================");
         while (repeat){
-            boolean end = false;  
+            boolean end = false;
+            int mode = 0;
+            int state = 0;
+            int difficulty = 0;
             System.out.println("\nSilakan pilih mode permainan:");
             System.out.println("1. Player vs Player");
             System.out.println("2. Player vs Bot");
             System.out.print("Mode yang Anda pilih (1/2): ");
-            int mode = scan.nextInt();
+            mode = scan.nextInt();
+            while (mode < 1 || mode > 2){
+                System.out.print("Opsi yang anda pilih tidak valid! Mohon pilih dari opsi yang ada (1/2): ");
+                mode = scan.nextInt();
+            }  
+            
             while (true){
                 if(mode == 1){
                     System.out.print("Memulai permainan");
@@ -858,24 +869,27 @@ public class TicTacToe {
                     }
                     break;
                 }
-                else if(mode == 2){
+                else if(mode == 2){     
                     System.out.println("\nSilakan pilih pion Anda:");
                     System.out.println("1. X (Giliran pertama)");
                     System.out.println("2. O (Giliran kedua)");
                     System.out.print("Ketikkan angka dari pion yang anda mau (1/2): ");
-                    int state = scan.nextInt();
-                    int difficulty = -1;
-        
-                    while(difficulty >= 4 || difficulty <= 0){
-                        System.out.println("\nPilih tingkat kesulitan Bot:");
-                        System.out.println("1. Easy");
-                        System.out.println("2. Medium");
-                        System.out.println("3. Impossible");
-                        System.out.print("Tingkat kesulitan yang Anda pilih (1/2/3): ");
+                    state = scan.nextInt();
+                    while (state < 1 || state > 2){
+                        System.out.print("Pion yang anda pilih tidak valid! Mohon pilih dari opsi yang ada (1/2): ");
+                        state = scan.nextInt();
+                    }
+
+                    
+                    System.out.println("\nPilih tingkat kesulitan Bot:");
+                    System.out.println("1. Easy");
+                    System.out.println("2. Medium");
+                    System.out.println("3. Impossible");
+                    System.out.print("Tingkat kesulitan yang Anda pilih (1/2/3): ");
+                    difficulty = scan.nextInt();
+                    while(difficulty < 1 || difficulty > 3){
+                        System.out.print("Tingkat kesulitan tidak valid. Mohon masukkan opsi yang ada (1/2/3): ");
                         difficulty = scan.nextInt();
-                        if (difficulty >= 4 || difficulty <= 0){
-                            System.out.println("Tingkat kesulitan tidak valid. Mohon masukkan opsi yang ada (1/2/3): ");
-                        }
                     }
                     System.out.print("Memulai permainan");
                     loading(600);     
@@ -894,15 +908,15 @@ public class TicTacToe {
             System.out.println("1.Ya");
             System.out.println("2.Tidak");
             System.out.print("Silahkan pilih (1/2): ");
-            int retry = scan.nextInt();
+            int playAgain = scan.nextInt();
             while (true){
-                if (retry == 1){
+                if (playAgain == 1){
                     counter = 1;
                     clearBoard();
                     repeat = true;
                     break;
                 }
-                else if (retry == 2){
+                else if (playAgain == 2){
                     repeat = false;
                     System.out.println("\nTerima kasih sudah bermain TicTacToe!");
                     System.out.print("Mengakhiri program");
@@ -912,10 +926,11 @@ public class TicTacToe {
                 }
                 else{
                     System.out.println("Opsi anda tidak valid! mohon pilih opsi yang ada(1/2)");
+                    playAgain = scan.nextInt();
                 }    
-            }    
+            }
+        }    
         }   
-    }
 
     /**
      * Metode utama untuk menjalankan program.
