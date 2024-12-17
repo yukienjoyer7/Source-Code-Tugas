@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
-public class Tes {
-
+public class IP_Calculator {
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
@@ -41,7 +40,7 @@ public class Tes {
             total_bobot += bobot_matkul[i];
             total_nilai += nilai_angka[i] * bobot_matkul[i];
         }
-        
+        scan.close();
         double ip = total_nilai / total_bobot;
 
 
@@ -53,6 +52,9 @@ public class Tes {
         for (int i = 0; i < jumlah_matkul; i++) {
             System.out.printf("│ %-3d │ %-20s │ %-5s │ %-3d │\n", 
                 (i + 1), nama_matkul[i], "  " + nilai_matkul[i], bobot_matkul[i]);
+            if (i != jumlah_matkul - 1){
+                System.out.println("├─────┼──────────────────────┼───────┼─────┤");
+            }
         }
         System.out.println("└─────┴──────────────────────┴───────┴─────┘");
 
